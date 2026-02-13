@@ -6,50 +6,110 @@
 <title>GST Calculator</title>
 
 <style>
-body {
+* {
+  box-sizing: border-box;
   margin: 0;
+  padding: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+}
+
+body {
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  background: linear-gradient(135deg,#1f4037,#99f2c8);
+  padding: 40px; /* equal space all around */
 }
 
 .card {
-  background: #ffffff;
   width: 100%;
-  max-width: 420px;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+  max-width: 450px;
+  background: #ffffff;
+  padding: 35px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
 }
 
 h2 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+}
+
+.input-group {
+  margin-bottom: 18px;
 }
 
 input {
   width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  margin-bottom: 15px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
   font-size: 16px;
+  transition: 0.3s;
+}
+
+input:focus {
+  outline: none;
+  border-color: #1f4037;
+  box-shadow: 0 0 0 3px rgba(31,64,55,0.1);
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.calculate {
+  background: #1f4037;
+  color: white;
+}
+
+.calculate:hover {
+  background: #16302a;
+}
+
+.reset {
+  background: #eee;
+}
+
+.reset:hover {
+  background: #ddd;
 }
 
 .result {
-  background: #f4f6ff;
-  padding: 15px;
-  border-radius: 8px;
-  margin-top: 10px;
+  margin-top: 25px;
+  padding: 18px;
+  background: #f4f8f7;
+  border-radius: 12px;
   display: none;
+  animation: fadeIn 0.4s ease forwards;
 }
 
 .result div {
-  margin: 6px 0;
+  margin: 8px 0;
+  font-size: 15px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
 </head>
@@ -59,8 +119,18 @@ input {
 <div class="card">
   <h2>GST Calculator</h2>
 
-  <input type="number" id="amount" placeholder="Enter Base Amount" oninput="calculate()">
-  <input type="number" id="rate" placeholder="Enter GST %" oninput="calculate()">
+  <div class="input-group">
+    <input type="number" id="amount" placeholder="Enter Base Amount">
+  </div>
+
+  <div class="input-group">
+    <input type="number" id="rate" placeholder="Enter GST %">
+  </div>
+
+  <div class="buttons">
+    <button class="calculate" onclick="calculate()">Calculate</button>
+    <button class="reset" onclick="resetForm()">Reset</button>
+  </div>
 
   <div class="result" id="resultBox">
     <div><strong>GST Amount:</strong> ₹ <span id="gst"></span></div>
@@ -76,7 +146,7 @@ function calculate() {
   var rate = parseFloat(document.getElementById("rate").value);
 
   if (isNaN(amount) || isNaN(rate)) {
-    document.getElementById("resultBox").style.display = "none";
+    alert("Please enter valid values");
     return;
   }
 
@@ -90,6 +160,12 @@ function calculate() {
   document.getElementById("sgst").innerText = half.toFixed(2);
 
   document.getElementById("resultBox").style.display = "block";
+}
+
+function resetForm() {
+  document.getElementById("amount").value = "";
+  document.getElementById("rate").value = "";
+  document.getElementById("resultBox").style.display = "none";
 }
 </script>
 
