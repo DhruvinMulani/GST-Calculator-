@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GST Calculator</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 420px;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.result {
+  background: #f4f6ff;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 10px;
+  display: none;
+}
+
+.result div {
+  margin: 6px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>GST Calculator</h2>
+
+  <input type="number" id="amount" placeholder="Enter Base Amount" oninput="calculate()">
+  <input type="number" id="rate" placeholder="Enter GST %" oninput="calculate()">
+
+  <div class="result" id="resultBox">
+    <div><strong>GST Amount:</strong> ₹ <span id="gst"></span></div>
+    <div><strong>Total Amount:</strong> ₹ <span id="total"></span></div>
+    <div><strong>CGST:</strong> ₹ <span id="cgst"></span></div>
+    <div><strong>SGST:</strong> ₹ <span id="sgst"></span></div>
+  </div>
+</div>
+
+<script>
+function calculate() {
+  var amount = parseFloat(document.getElementById("amount").value);
+  var rate = parseFloat(document.getElementById("rate").value);
+
+  if (isNaN(amount) || isNaN(rate)) {
+    document.getElementById("resultBox").style.display = "none";
+    return;
+  }
+
+  var gst = (amount * rate) / 100;
+  var total = amount + gst;
+  var half = gst / 2;
+
+  document.getElementById("gst").innerText = gst.toFixed(2);
+  document.getElementById("total").innerText = total.toFixed(2);
+  document.getElementById("cgst").innerText = half.toFixed(2);
+  document.getElementById("sgst").innerText = half.toFixed(2);
+
+  document.getElementById("resultBox").style.display = "block";
+}
+</script>
+
+</body>
+</html>
