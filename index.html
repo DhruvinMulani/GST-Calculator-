@@ -3,169 +3,214 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GST Calculator</title>
+<title>Multi GST Calculator</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <style>
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
 }
 
 body {
-  min-height: 100vh;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg,#4e73df,#1cc88a);
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg,#1f4037,#99f2c8);
-  padding: 40px; /* equal space all around */
+  min-height: 100vh;
+  padding: 40px;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 700px;
 }
 
 .card {
-  width: 100%;
-  max-width: 450px;
-  background: #ffffff;
-  padding: 35px;
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-  transition: transform 0.3s ease;
-}
-
-.card:hover {
-  transform: translateY(-4px);
+  background: #fff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
 }
 
 h2 {
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
+  font-weight: 600;
 }
 
-.input-group {
-  margin-bottom: 18px;
+.input-grid {
+  display: grid;
+  gap: 20px;
+  margin-bottom: 20px;
 }
 
 input {
-  width: 100%;
   padding: 14px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 1px solid #ddd;
-  font-size: 16px;
+  font-size: 15px;
+  width: 100%;
   transition: 0.3s;
 }
 
 input:focus {
   outline: none;
-  border-color: #1f4037;
-  box-shadow: 0 0 0 3px rgba(31,64,55,0.1);
+  border-color: #4e73df;
+  box-shadow: 0 0 0 3px rgba(78,115,223,0.15);
 }
 
-.buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
+.section {
+  background: #f8f9ff;
+  padding: 20px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  display: none;
 }
 
-button {
-  flex: 1;
-  padding: 12px;
-  border-radius: 10px;
+.total-box {
+  background: linear-gradient(135deg,#4e73df,#1cc88a);
+  color: #fff;
+  padding: 25px;
+  border-radius: 18px;
+  font-size: 15px;
+  line-height: 1.8;
+  margin-bottom: 25px;
+  display: none;
+}
+
+.button-container {
+  text-align: center;
+}
+
+.download-btn {
+  background: #222;
+  color: #fff;
+  padding: 14px 30px;
+  border-radius: 30px;
   border: none;
   font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
   transition: 0.3s;
+  opacity: 0.5;
 }
 
-.calculate {
-  background: #1f4037;
-  color: white;
+.download-btn.active {
+  opacity: 1;
 }
 
-.calculate:hover {
-  background: #16302a;
-}
-
-.reset {
-  background: #eee;
-}
-
-.reset:hover {
-  background: #ddd;
-}
-
-.result {
-  margin-top: 25px;
-  padding: 18px;
-  background: #f4f8f7;
-  border-radius: 12px;
-  display: none;
-  animation: fadeIn 0.4s ease forwards;
-}
-
-.result div {
-  margin: 8px 0;
-  font-size: 15px;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+.download-btn:hover.active {
+  background: #000;
+  transform: translateY(-2px);
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-  <h2>GST Calculator</h2>
+<div class="wrapper">
+  <div class="card" id="captureArea">
 
-  <div class="input-group">
-    <input type="number" id="amount" placeholder="Enter Base Amount">
-  </div>
+    <h2>Multi GST Calculator</h2>
 
-  <div class="input-group">
-    <input type="number" id="rate" placeholder="Enter GST %">
-  </div>
+    <div class="input-grid">
+      <input type="number" id="baseAmount" placeholder="Enter Base Amount" oninput="calculate()">
+      <input type="number" id="rate1" placeholder="GST % 1" oninput="calculate()">
+      <input type="number" id="rate2" placeholder="GST % 2" oninput="calculate()">
+      <input type="number" id="rate3" placeholder="GST % 3" oninput="calculate()">
+    </div>
 
-  <div class="buttons">
-    <button class="calculate" onclick="calculate()">Calculate</button>
-    <button class="reset" onclick="resetForm()">Reset</button>
-  </div>
+    <div class="section" id="section1"></div>
+    <div class="section" id="section2"></div>
+    <div class="section" id="section3"></div>
 
-  <div class="result" id="resultBox">
-    <div><strong>GST Amount:</strong> ₹ <span id="gst"></span></div>
-    <div><strong>Total Amount:</strong> ₹ <span id="total"></span></div>
-    <div><strong>CGST:</strong> ₹ <span id="cgst"></span></div>
-    <div><strong>SGST:</strong> ₹ <span id="sgst"></span></div>
+    <div class="total-box" id="grandTotal"></div>
+
+    <div class="button-container">
+      <button class="download-btn" id="downloadBtn" onclick="downloadImage()" disabled>
+        Download Calculation as Image
+      </button>
+    </div>
+
   </div>
 </div>
 
 <script>
-function calculate() {
-  var amount = parseFloat(document.getElementById("amount").value);
-  var rate = parseFloat(document.getElementById("rate").value);
-
-  if (isNaN(amount) || isNaN(rate)) {
-    alert("Please enter valid values");
-    return;
-  }
-
-  var gst = (amount * rate) / 100;
-  var total = amount + gst;
+function calculateGST(base, rate) {
+  var gst = (base * rate) / 100;
+  var total = base + gst;
   var half = gst / 2;
-
-  document.getElementById("gst").innerText = gst.toFixed(2);
-  document.getElementById("total").innerText = total.toFixed(2);
-  document.getElementById("cgst").innerText = half.toFixed(2);
-  document.getElementById("sgst").innerText = half.toFixed(2);
-
-  document.getElementById("resultBox").style.display = "block";
+  return { gst, total, cgst: half, sgst: half };
 }
 
-function resetForm() {
-  document.getElementById("amount").value = "";
-  document.getElementById("rate").value = "";
-  document.getElementById("resultBox").style.display = "none";
+function calculate() {
+  var base = parseFloat(document.getElementById("baseAmount").value);
+  var r1 = parseFloat(document.getElementById("rate1").value);
+  var r2 = parseFloat(document.getElementById("rate2").value);
+  var r3 = parseFloat(document.getElementById("rate3").value);
+
+  var hasAnyResult = false;
+
+  function process(rate, sectionId) {
+    if (base && rate) {
+      var result = calculateGST(base, rate);
+
+      document.getElementById(sectionId).innerHTML =
+        "<strong>GST Amount:</strong> ₹ " + result.gst.toFixed(2) + "<br>" +
+        "<strong>Total Amount:</strong> ₹ " + result.total.toFixed(2) + "<br>" +
+        "<strong>CGST:</strong> ₹ " + result.cgst.toFixed(2) + "<br>" +
+        "<strong>SGST:</strong> ₹ " + result.sgst.toFixed(2);
+
+      document.getElementById(sectionId).style.display = "block";
+      hasAnyResult = true;
+      return result;
+    } else {
+      document.getElementById(sectionId).style.display = "none";
+      return { gst:0, total:0, cgst:0, sgst:0 };
+    }
+  }
+
+  var res1 = process(r1, "section1");
+  var res2 = process(r2, "section2");
+  var res3 = process(r3, "section3");
+
+  if (hasAnyResult) {
+    var grandGST = res1.gst + res2.gst + res3.gst;
+    var grandTotalAmount = res1.total + res2.total + res3.total;
+    var grandCGST = res1.cgst + res2.cgst + res3.cgst;
+    var grandSGST = res1.sgst + res2.sgst + res3.sgst;
+
+    document.getElementById("grandTotal").innerHTML =
+      "<strong>Total of All Three</strong><br><br>" +
+      "GST Amount: ₹ " + grandGST.toFixed(2) + "<br>" +
+      "Total Amount: ₹ " + grandTotalAmount.toFixed(2) + "<br>" +
+      "CGST: ₹ " + grandCGST.toFixed(2) + "<br>" +
+      "SGST: ₹ " + grandSGST.toFixed(2);
+
+    document.getElementById("grandTotal").style.display = "block";
+
+    document.getElementById("downloadBtn").disabled = false;
+    document.getElementById("downloadBtn").classList.add("active");
+  } else {
+    document.getElementById("grandTotal").style.display = "none";
+    document.getElementById("downloadBtn").disabled = true;
+    document.getElementById("downloadBtn").classList.remove("active");
+  }
+}
+
+function downloadImage() {
+  html2canvas(document.getElementById("captureArea")).then(canvas => {
+    var link = document.createElement("a");
+    link.download = "GST_Calculation.png";
+    link.href = canvas.toDataURL();
+    link.click();
+  });
 }
 </script>
 
