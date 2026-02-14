@@ -3,15 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> MIRAI Multi GST Calculator</title>
+<title>Multi GST Calculator</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -24,10 +22,7 @@ body {
   padding: 40px;
 }
 
-.wrapper {
-  width: 100%;
-  max-width: 700px;
-}
+.wrapper { width: 100%; max-width: 700px; }
 
 .card {
   background: #fff;
@@ -84,9 +79,7 @@ input:focus {
   display: none;
 }
 
-.button-container {
-  text-align: center;
-}
+.button-container { text-align: center; }
 
 .download-btn {
   background: #222;
@@ -144,9 +137,8 @@ input:focus {
 <script>
 function calculateGST(base, rate) {
   var gst = (base * rate) / 100;
-  var total = base + gst;
   var half = gst / 2;
-  return { gst, total, cgst: half, sgst: half };
+  return { gst, cgst: half, sgst: half };
 }
 
 function calculate() {
@@ -155,6 +147,9 @@ function calculate() {
   var r2 = parseFloat(document.getElementById("rate2").value);
   var r3 = parseFloat(document.getElementById("rate3").value);
 
+  var totalGST = 0;
+  var totalCGST = 0;
+  var totalSGST = 0;
   var hasAnyResult = false;
 
   function process(rate, sectionId) {
@@ -163,38 +158,35 @@ function calculate() {
 
       document.getElementById(sectionId).innerHTML =
         "<strong>GST Amount:</strong> ₹ " + result.gst.toFixed(2) + "<br>" +
-        "<strong>Total Amount:</strong> ₹ " + result.total.toFixed(2) + "<br>" +
         "<strong>CGST:</strong> ₹ " + result.cgst.toFixed(2) + "<br>" +
         "<strong>SGST:</strong> ₹ " + result.sgst.toFixed(2);
 
       document.getElementById(sectionId).style.display = "block";
+
+      totalGST += result.gst;
+      totalCGST += result.cgst;
+      totalSGST += result.sgst;
       hasAnyResult = true;
-      return result;
     } else {
       document.getElementById(sectionId).style.display = "none";
-      return { gst:0, total:0, cgst:0, sgst:0 };
     }
   }
 
-  var res1 = process(r1, "section1");
-  var res2 = process(r2, "section2");
-  var res3 = process(r3, "section3");
+  process(r1, "section1");
+  process(r2, "section2");
+  process(r3, "section3");
 
   if (hasAnyResult) {
-    var grandGST = res1.gst + res2.gst + res3.gst;
-    var grandTotalAmount = res1.total + res2.total + res3.total;
-    var grandCGST = res1.cgst + res2.cgst + res3.cgst;
-    var grandSGST = res1.sgst + res2.sgst + res3.sgst;
+    var finalAmount = base + totalGST;
 
     document.getElementById("grandTotal").innerHTML =
       "<strong>Total of All Three</strong><br><br>" +
-      "GST Amount: ₹ " + grandGST.toFixed(2) + "<br>" +
-      "Total Amount: ₹ " + grandTotalAmount.toFixed(2) + "<br>" +
-      "CGST: ₹ " + grandCGST.toFixed(2) + "<br>" +
-      "SGST: ₹ " + grandSGST.toFixed(2);
+      "GST Amount: ₹ " + totalGST.toFixed(2) + "<br>" +
+      "Total Amount: ₹ " + finalAmount.toFixed(2) + "<br>" +
+      "CGST: ₹ " + totalCGST.toFixed(2) + "<br>" +
+      "SGST: ₹ " + totalSGST.toFixed(2);
 
     document.getElementById("grandTotal").style.display = "block";
-
     document.getElementById("downloadBtn").disabled = false;
     document.getElementById("downloadBtn").classList.add("active");
   } else {
